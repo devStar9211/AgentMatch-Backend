@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Http\Request;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+Route::post('/user/login', 'API\UserController@login');
+Route::post('/user/register', 'API\UserController@register');
+Route::group(['middleware' => 'auth:api'], function(){
+  Route::post('details', 'API\UserController@details');
+});
+Route::get('user/edit/{user_id}', 'API\UserController@edit');
+Route::post('user/edit', 'API\UserController@update');
+// Route::group([    
+//     'namespace' => 'Auth',    
+//     'middleware' => 'api',    
+//     'prefix' => 'password'
+// ], function () {    
+//     Route::post('create', 'ResetPasswordController@create');
+//     Route::get('find/{token}', 'ResetPasswordController@find');
+//     Route::post('reset', 'ResetPasswordController@reset');
+// });
+Route::get('users/get_list/{token}',"API\MatchController@getList");
+Route::post('score/set', "API\MatchController@setScore");
+Route::post('concern/set', "API\MatchController@setConcern");
+Route::post('consult/set', "API\MatchController@setConcern");
+Route::get('messages/{token}', 'MessageController@index');
+Route::post('messages/send', 'MessageController@send');
