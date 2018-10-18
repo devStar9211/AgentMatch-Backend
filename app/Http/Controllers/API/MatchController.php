@@ -25,7 +25,7 @@ public $successStatus = 200;
     else $page = 1;
     
     if (array_key_exists("keyword", $input)) $keyword = $input['keyword'];
-    $keyword = "";
+    else $keyword = "";
 
     $user = User::where('remember_token', $token)->first();
     if ($user == null) {
