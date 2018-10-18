@@ -66,7 +66,7 @@ class Handler extends ExceptionHandler
     $statusCode = 500;
     if (method_exists($exception, 'getStatusCode')) {
         $statusCode = $exception->getStatusCode();
-        $response['is_error'] = true;
+        $response['success'] = false;
         
     }
 
@@ -81,7 +81,7 @@ class Handler extends ExceptionHandler
 
       default:
         $response['error'] = $exception->getMessage();
-        $response['is_error'] = true;
+        $response['success'] = false;
         if (Auth::user() == null) {
           # code...
           $response['response']['user_id'] = null;

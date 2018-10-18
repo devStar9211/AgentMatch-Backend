@@ -26,11 +26,11 @@ public $successStatus = 200;
         $ret_val['birthday'] = $birthday -> format('Y/m/d');
         
         $response['response']['user_info'] = $ret_val;
-        $response['is_error']=false; 
+        $response['success']=true; 
         return response()->json($response, $this-> successStatus); 
     } 
     else{
-        $response['is_error']=true; 
+        $response['success']=false; 
         $response['message']="登録されていないユーザーです。";
         return response()->json($response, 401); 
     } 
@@ -65,7 +65,7 @@ public $successStatus = 200;
     }
     
     $response['response']['user_id'] = $user -> id;
-    $response['is_error'] = false;
+    $response['success'] = true;
     $success['firstName'] =  $user->firstName;
     return response()->json($response, 202); 
   }
@@ -99,7 +99,7 @@ public $successStatus = 200;
       return response()->json(['error'=>$exception->messages()], 401);  
     }
     $response['response']['user_id'] = $user -> id;
-    $response['is_error'] = false;
+    $response['success'] = true;
     $success['firstName'] =  $user->firstName;
     return response()->json($response, 202); 
   }
