@@ -28,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
     return $this->belongsTo('agent_match\Concern');
   }
 
+
   public function rollApiKey(){
     $this->remember_token = str_random(20);
 

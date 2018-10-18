@@ -11,7 +11,7 @@ use Carbon;
 use Profile;
 use DB;
 use Score;
-use Match;
+use agent_match\Match;
 use Concern;
 use Debugbar;
 use agent_match\Message;
@@ -70,6 +70,10 @@ class MessageController extends Controller
       })->orWhere(function($query) use ($user, $person) {
         $query -> where('receiver_id', $user -> id) -> where('sender_id', $person['id']);
       });
+
+      $match = new Match;
+      $status = $match->getStatus($user -> id, $each->receiver_id) -> get();
+      $person['status'] = $status->first()['status'];
       $person['messages'] = $messages -> get() ->toArray();
       $person_list[] = $person;
       $person = [];
