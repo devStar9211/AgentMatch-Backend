@@ -142,11 +142,17 @@ class MessageController extends Controller
       $response['success'] = false;
       return response() -> json($response, 405);
     }
+    $match = Match::find($input['threadId']);
+    if ($user -> id == $match -> a_id) {
+      $target = $match -> b_id;
+    } else {
+      $target = $match -> a_id;
+    }
+
     $message = new Message;
-    $message->sender_id=$user->id;
-    $message->receiver_id = $input['receiver_id'];
-    $message->contents = $input['contents'];
-    $message->status = 1;
+    $message->sender_id = $user->id;
+    $message->receiver_id = $target;
+    $message->contents = $input['message'];
     $message->save();
     $response['success'] = true;
     return response() -> json($response, 202);
@@ -217,6 +223,41 @@ class MessageController extends Controller
     $response['response']['message_list'] = $message_list;
     return response() -> json($response, 202);
 
+  }
+
+  public function get_last_message(Request $request) {
+    $input = $request -> all();
+    $user = User::where('remember_token', $input['token'])->first();
+    if ($user == null) {
+      $response['message'] = "Unauthorized";
+      $response['success'] = false;
+      return response() -> json($response, 405);
+    }
+    $threadId = $input['threadId'];
+    $match = Match::find($threadId);
+    $message = Message::where('match_id', $threadId) -> latest() -> first();
+    if ($match -> a_id == $user -> id) {
+      $isSent = true;
+        $target = User::find($match -> b_id);
+      }
+    else {$target = User::find($match -> a_id);
+        $isSent = false;}
+      
+    $senderInfo['userId'] = $target -> id;
+    $senderInfo['firstName'] = $target -> firstName;
+    $senderInfo['lastName'] = $target -> lastName;
+    $senderInfo['profileLink'] = $target -> profile() -> first() -> profileLink;
+    $message_info = $message -> contents;
+    $image_link = $message -> image_link;
+    $createdAt = $message -> created_at -> toDateTimeString();
+    $message_row['senderInfo'] = $senderInfo;
+    $message_row['message'] = $message_info;
+    $message_row['imageLink'] = $image_link;
+    $message_row['createdAt'] = $createdAt;
+    $message_row['isSent'] = $isSent;
+    $response['message'] = $message_row;
+    $response['success'] = true;
+    return response() -> json($response);
   }
 
     /**

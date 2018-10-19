@@ -35,3 +35,4 @@ Route::post('messages/send', 'MessageController@send');
 Route::post('consult/request', "API\MatchController@request_consult");
 Route::post('consult/accept', "API\MatchController@accept_consult");
 Route::GET('messages/get_message', 'MessageController@get_message');
+Route::GET('messages/get_last_message', 'MessageController@get_last_message');
