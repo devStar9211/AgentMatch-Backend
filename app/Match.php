@@ -3,6 +3,7 @@
 namespace agent_match;
 
 use Illuminate\Database\Eloquent\Model;
+use agent_match\Message;
 
 class Match extends Model
 {
@@ -13,5 +14,13 @@ class Match extends Model
     }) -> orWhere(function($query)  use($id, $target_id){
       $query -> where('b_id', $id) -> where('a_id', $target_id);
     });
+  }
+
+  public function get_match_list(int $user_id) {
+    return $this->where('a_id', $user_id);
+  }
+
+  public function messages() {
+    return $this->hasMany(Message::Class);
   }
 }

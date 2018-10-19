@@ -23,19 +23,11 @@ Route::group(['middleware' => 'auth:api'], function(){
 });
 Route::get('user/edit/{user_id}', 'API\UserController@edit');
 Route::post('user/edit', 'API\UserController@update');
-// Route::group([    
-//     'namespace' => 'Auth',    
-//     'middleware' => 'api',    
-//     'prefix' => 'password'
-// ], function () {    
-//     Route::post('create', 'ResetPasswordController@create');
-//     Route::get('find/{token}', 'ResetPasswordController@find');
-//     Route::post('reset', 'ResetPasswordController@reset');
-// });
+
 Route::get('user/get_list/{token}',"API\MatchController@getList");
 Route::post('score/set', "API\MatchController@setScore");
 Route::post('concern/set', "API\MatchController@setConcern");
-Route::get('corcern/unset', "API\MatchController@removeConcern");
+Route::get('corcern/unset/{token}/{target_id}', "API\MatchController@removeConcern");
 Route::post('consult/set', "API\MatchController@setConcern");
 Route::get('messages/{token}', 'MessageController@index');
 Route::post('messages/send', 'MessageController@send');

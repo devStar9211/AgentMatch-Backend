@@ -97,7 +97,7 @@ public $successStatus = 200;
     return response() -> json($response, 202);
   }
 
-  public function removeConcern($token){
+  public function removeConcern($token, $target_id){
     $input = $request->all(); 
     $user = User::where('remember_token', $input['token'])->first();
     if ($user == null) {
@@ -106,7 +106,7 @@ public $successStatus = 200;
       $response['success'] = false;
       return response() -> json($response, 405);
     }
-    $concern = Concern::WHERE('user_id', $user->id);
+    $concern = Concern::WHERE('user_id', $user->id)->WHERE('target_id', $target_id)->first();
     $concern -> remove();
     $response['success'] = true;
     return response() -> json($response, 202);
@@ -138,15 +138,6 @@ public $successStatus = 200;
     return response() -> json($response, 202);
   } 
 
-  public function send_match($request) {
-    $input = $request->all(); 
-    $user = User::where('remember_token', $input['token'])->first();
-    if ($user == null) {
-      # code...
-      $response['message'] = "Unauthorized";
-      $response['success'] = false;
-      return response() -> json($response, 405);
-    }
-  }
+
 
 }
