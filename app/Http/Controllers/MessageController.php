@@ -118,7 +118,7 @@ class MessageController extends Controller
       $consult['userinfo'] = $userinfo;
       $consult['consultId'] = $match -> id;
       $consult['threadId'] = $match -> id;
-      $consult['createdAt'] = $match -> created_at->toDateString();
+      $consult['createdAt'] = $match -> created_at->toDateTimeString();
       
       $consult['status'] = $match -> status;
 
@@ -170,7 +170,7 @@ class MessageController extends Controller
       $userinfo['lastName'] = $user_info -> lastName;
       $userinfo['birthday'] = $user_info -> birthday;
       $userinfo['score'] = $score;
-      $userinfo['createdAt'] = $user_info -> created_at->toDateString();
+      $userinfo['createdAt'] = $user_info -> created_at->toDateTimeString();
       $concerns[] = $userinfo;
     }
     $concern_list['concern_list'] = $concerns;
