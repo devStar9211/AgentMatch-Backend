@@ -118,7 +118,7 @@ class MessageController extends Controller
       $consult['userinfo'] = $userinfo;
       $consult['consultId'] = $match -> id;
       $consult['threadId'] = $match -> id;
-      $consult['createdAt'] = $match -> created_at->toDateTimeString();
+      $consult['createdAt'] = $match -> created_at ->toDateTimeString();
       
       $consult['status'] = $match -> status;
 
@@ -177,6 +177,46 @@ class MessageController extends Controller
     $response['response'] = $concern_list;
     $response['success'] = true;
     return response() -> json($response, 202);
+  }
+
+  public function get_message(Request $request) {
+    $input = $request -> all();
+    $user = User::where('remember_token', $input['token'])->first();
+    if ($user == null) {
+      $response['message'] = "Unauthorized";
+      $response['success'] = false;
+      return response() -> json($response, 405);
+    }
+    $threadId = $input['threadId'];
+    $match = Match::find($threadId);
+    $messages = Message::where('match_id', $threadId) -> get();
+    if ($match -> a_id == $user -> id) {
+      $isSent = true;
+        $target = User::find($match -> b_id);
+      }
+      else {$target = User::find($match -> a_id);
+        $isSent = false;}
+      
+    foreach ($messages as $index => $message) {
+      $senderInfo['userId'] = $target -> id;
+      $senderInfo['firstName'] = $target -> firstName;
+      $senderInfo['lastName'] = $target -> lastName;
+      $senderInfo['profileLink'] = $target -> profile() -> first() -> profileLink;
+      $message_info = $message -> contents;
+      $image_link = $message -> image_link;
+      $createdAt = $message -> created_at -> toDateTimeString();
+      $message_row['senderInfo'] = $senderInfo;
+      $message_row['message'] = $message_info;
+      $message_row['imageLink'] = $image_link;
+      $message_row['createdAt'] = $createdAt;
+      $message_row['isSent'] = $isSent;
+      $message_list[] = $message_row;
+    }
+    $response['success'] = true;
+    // $response['messages'] = $messages;
+    $response['response']['message_list'] = $message_list;
+    return response() -> json($response, 202);
+
   }
 
     /**
