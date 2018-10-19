@@ -138,6 +138,25 @@ public $successStatus = 200;
     return response() -> json($response, 202);
   } 
 
-
+  public function request_consult(Request $request) {
+    $input = $request->all(); 
+    $user = User::where('remember_token', $input['token'])->first();
+    if ($user == null) {
+      # code...
+      $response['message'] = "Unauthorized";
+      $response['success'] = false;
+      return response() -> json($response, 405);
+    }
+    $match = new Match;
+    $match -> a_id = $user -> id;
+    $match -> b_id = $input['to'];
+    $match -> status = 1;
+    $match -> save();
+    $response['success'] = true;
+    $data['thread_id'] = $match -> id;
+    $data['status'] = 1;
+    $response['response'] = $data;
+    return response() -> json($response, 202);
+  }
 
 }

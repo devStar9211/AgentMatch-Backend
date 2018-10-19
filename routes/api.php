@@ -28,7 +28,8 @@ Route::get('user/get_list/{token}',"API\MatchController@getList");
 Route::post('score/set', "API\MatchController@setScore");
 Route::post('concern/set', "API\MatchController@setConcern");
 Route::get('corcern/unset/{token}/{target_id}', "API\MatchController@removeConcern");
-Route::post('consult/set', "API\MatchController@setConcern");
+
 Route::get('consult/get_list', 'MessageController@index');
 Route::get('concern/get_list', 'MessageController@get_concern_list');
 Route::post('messages/send', 'MessageController@send');
+Route::post('consult/request', "API\MatchController@request_consult");
