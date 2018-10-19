@@ -159,4 +159,20 @@ public $successStatus = 200;
     return response() -> json($response, 202);
   }
 
+  public function accept_consult() {
+    $input = $request->all(); 
+    $user = User::where('remember_token', $input['token'])->first();
+    if ($user == null) {
+      # code...
+      $response['message'] = "Unauthorized";
+      $response['success'] = false;
+      return response() -> json($response, 405);
+    }
+    $consult = Match::find($input['consultId']);
+    $consult -> status = $input['status'];
+    $consult -> save();
+    $response['success'] = true;
+    return response() -> json($response, 202);
+  }
+
 }
