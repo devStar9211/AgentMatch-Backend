@@ -35,6 +35,7 @@ Route::post('user/edit', 'API\UserController@update');
 Route::get('user/get_list/{token}',"API\MatchController@getList");
 Route::post('score/set', "API\MatchController@setScore");
 Route::post('concern/set', "API\MatchController@setConcern");
+Route::get('corcern/unset', "API\MatchController@removeConcern");
 Route::post('consult/set', "API\MatchController@setConcern");
 Route::get('messages/{token}', 'MessageController@index');
 Route::post('messages/send', 'MessageController@send');

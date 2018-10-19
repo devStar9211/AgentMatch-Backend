@@ -26,7 +26,8 @@ public $successStatus = 200;
     
     if (array_key_exists("keyword", $input)) $keyword = $input['keyword'];
     else $keyword = "";
-
+    $where = "";
+    if (array_key_exists("concern", $input)) $where = " AND prof_arr.target_id IS NOT NULL";
     $user = User::where('remember_token', $token)->first();
     if ($user == null) {
       # code...
@@ -45,14 +46,14 @@ public $successStatus = 200;
         users
         LEFT OUTER JOIN ( SELECT profiles.*, concern_arr.target_id
       FROM
-    `profiles` LEFT OUTER JOIN ( SELECT * FROM concerns WHERE concerns.user_id = 6 ) AS concern_arr ON PROFILES.user_id = concern_arr.target_id 
+    `profiles` LEFT OUTER JOIN ( SELECT * FROM concerns WHERE concerns.user_id = ".$user->id." ) AS concern_arr ON PROFILES.user_id = concern_arr.target_id 
         ) AS prof_arr ON users.id = prof_arr.user_id
       LEFT OUTER JOIN ( SELECT AVG( scores.score ) AS score, target_id FROM scores GROUP BY scores.target_id ) AS scores ON scores.target_id = `users`.id 
       LEFT OUTER JOIN matches ON ( matches.a_id = ".$user->id." AND matches.b_id = users.id ) OR ( matches.a_id = users.id AND matches.b_id = ".$user->id." )
       WHERE
         (users.firstName LIKE '%".$keyword."%'
         OR users.lastName LIKE '%".$keyword."%' )
-      AND users.id <> ".$user->id."
+      AND users.id <> ".$user->id.$where."
       ORDER BY users.id
       LIMIT ".($page-1)*$num_per_page.", ".$num_per_page);
     $response['response']['user_list'] = $users;
@@ -96,6 +97,21 @@ public $successStatus = 200;
     return response() -> json($response, 202);
   }
 
+  public function removeConcern($token){
+    $input = $request->all(); 
+    $user = User::where('remember_token', $input['token'])->first();
+    if ($user == null) {
+      # code...
+      $response['message'] = "Unauthorized";
+      $response['success'] = false;
+      return response() -> json($response, 405);
+    }
+    $concern = Concern::WHERE('user_id', $user->id);
+    $concern -> remove();
+    $response['success'] = true;
+    return response() -> json($response, 202);
+  }
+
   public function setConsult(Request $request){
     $input = $request->all(); 
     $user = User::where('remember_token', $input['token'])->first();
@@ -121,5 +137,16 @@ public $successStatus = 200;
     $response['success'] = true;
     return response() -> json($response, 202);
   } 
+
+  public function send_match($request) {
+    $input = $request->all(); 
+    $user = User::where('remember_token', $input['token'])->first();
+    if ($user == null) {
+      # code...
+      $response['message'] = "Unauthorized";
+      $response['success'] = false;
+      return response() -> json($response, 405);
+    }
+  }
 
 }
