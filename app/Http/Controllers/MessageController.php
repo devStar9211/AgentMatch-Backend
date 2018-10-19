@@ -83,25 +83,32 @@ class MessageController extends Controller
   //   return response() -> json($response, 202);
   // }
 
-  public function index($token, Request $request){
+  public function index(Request $request){
     $input = $request -> all();
-    if (array_key_exists("page", $input)) $page = $input['page'];
-    else $page = 1;
-    
-    if (array_key_exists("keyword", $input)) $keyword = $input['keyword'];
-    $keyword = "";
-
-    $user = User::where('remember_token', $token)->first();
+    $user = User::where('remember_token', $input['token'])->first();
+    $type = $input['type'];
     if ($user == null) {
       # code...
       $response['message'] = "Unauthorized";
       $response['success'] = false;
       return response() -> json($response, 405);
     }
-    $matches = Match::all();
+    if ($type == 'true') {
+      # code...
+      $matches = Match::where('a_id', $user -> id)->get();
+    }
+    else {
+      $matches = Match::where('b_id', $user -> id)->get(); 
+    }
     foreach ($matches as $index => $match) {
       # code...
-      $target = User::find($match->b_id);
+      if ($type == 'true') {
+        $target = User::find($match->b_id);
+      }
+      else {
+        $target = User::find($match->a_id);
+      }
+      
       $profile = $target -> profile() -> first();
 
       $userinfo['userid'] = $target -> id;
@@ -116,10 +123,11 @@ class MessageController extends Controller
       $consult['status'] = $match -> status;
 
 
-      $consult_list[] = $consult;
+      $consult_list['consult_list'] = $consult;
     }
-    $response['consult_list'] = $consult_list;
+    $response['response'] = $consult_list;
     $response['success'] = true;
+
     return response() -> json($response, 202);
     
   }

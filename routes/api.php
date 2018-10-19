@@ -29,5 +29,5 @@ Route::post('score/set', "API\MatchController@setScore");
 Route::post('concern/set', "API\MatchController@setConcern");
 Route::get('corcern/unset/{token}/{target_id}', "API\MatchController@removeConcern");
 Route::post('consult/set', "API\MatchController@setConcern");
-Route::get('messages/{token}', 'MessageController@index');
+Route::get('consult/get_list', 'MessageController@index');
 Route::post('messages/send', 'MessageController@send');
