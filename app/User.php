@@ -24,8 +24,8 @@ class User extends Authenticatable implements MustVerifyEmail
     return $this->hasOne('agent_match\Profile');
   }
 
-  public function concerns() {
-    return $this->belongsTo('agent_match\Concern');
+  public function concern() {
+    return $this->hasMany('agent_match\Concern');
   }
 
 

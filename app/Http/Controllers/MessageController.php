@@ -10,9 +10,9 @@ use Validator;
 use Carbon;
 use Profile;
 use DB;
-use Score;
+use agent_match\Score;
 use agent_match\Match;
-use Concern;
+use agent_match\Concern;
 use Debugbar;
 use agent_match\Message;
 
@@ -123,8 +123,9 @@ class MessageController extends Controller
       $consult['status'] = $match -> status;
 
 
-      $consult_list['consult_list'] = $consult;
+      $consults[] = $consult;
     }
+    $consult_list['consult_list'] = $consults;
     $response['response'] = $consult_list;
     $response['success'] = true;
 
@@ -147,6 +148,33 @@ class MessageController extends Controller
     $message->contents = $input['contents'];
     $message->status = 1;
     $message->save();
+    $response['success'] = true;
+    return response() -> json($response, 202);
+  }
+
+  public function get_concern_list(Request $request) {
+    $input = $request->all(); 
+    $user = User::where('remember_token', $input['token'])->first();
+    if ($user == null) {
+      # code...
+      $response['message'] = "Unauthorized";
+      $response['success'] = false;
+      return response() -> json($response, 405);
+    }
+    $targets = Concern::where('user_id', $user -> id) -> get();
+    foreach ($targets as $index => $target) {
+      $user_info = User::find($target -> target_id);
+      $score = Score::where('target_id', $target -> target_id)->avg('score');
+      $userinfo['userid'] = $user_info -> id;
+      $userinfo['firstName'] = $user_info -> firstName;
+      $userinfo['lastName'] = $user_info -> lastName;
+      $userinfo['birthday'] = $user_info -> birthday;
+      $userinfo['score'] = $score;
+      $userinfo['createdAt'] = $user_info -> created_at->toDateString();
+      $concerns[] = $userinfo;
+    }
+    $concern_list['concern_list'] = $concerns;
+    $response['response'] = $concern_list;
     $response['success'] = true;
     return response() -> json($response, 202);
   }
