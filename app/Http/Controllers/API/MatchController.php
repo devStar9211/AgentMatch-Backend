@@ -37,7 +37,7 @@ public $successStatus = 200;
     
     $num_per_page = 10;
     $users = DB::select("SELECT
-        users.id as userid, prof_arr.profileLink, scores.score, prof_arr.location, CONCAT(users.firstName,' ',users.lastName) as name, users.birthday, prof_arr.portfollio,  prof_arr.isConsult, CASE WHEN
+        users.id as userid, prof_arr.profileLink, scores.score, prof_arr.location, users.firstName, users.lastName, users.birthday, prof_arr.portfollio,  prof_arr.isConsult, CASE WHEN
             prof_arr.target_id IS NOT NULL THEN
             'TRUE' ELSE 'FALSE' 
           END  as isConcern, matches.status as isConsult

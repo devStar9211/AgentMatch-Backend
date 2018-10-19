@@ -32,7 +32,7 @@ Route::post('user/edit', 'API\UserController@update');
 //     Route::get('find/{token}', 'ResetPasswordController@find');
 //     Route::post('reset', 'ResetPasswordController@reset');
 // });
-Route::get('users/get_list/{token}',"API\MatchController@getList");
+Route::get('user/get_list/{token}',"API\MatchController@getList");
 Route::post('score/set', "API\MatchController@setScore");
 Route::post('concern/set', "API\MatchController@setConcern");
 Route::post('consult/set', "API\MatchController@setConcern");
