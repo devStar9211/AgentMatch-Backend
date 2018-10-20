@@ -118,7 +118,7 @@ class MessageController extends Controller
       $consult['userinfo'] = $userinfo;
       $consult['consultId'] = $match -> id;
       $consult['threadId'] = $match -> id;
-      $consult['createdAt'] = $match -> created_at -> format('Y/m/d')
+      $consult['createdAt'] = $match -> created_at -> format('Y/m/d');
       
       $consult['status'] = $match -> status;
 
