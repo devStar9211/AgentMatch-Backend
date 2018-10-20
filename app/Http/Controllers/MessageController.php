@@ -118,7 +118,7 @@ class MessageController extends Controller
       $consult['userinfo'] = $userinfo;
       $consult['consultId'] = $match -> id;
       $consult['threadId'] = $match -> id;
-      $consult['createdAt'] = $match -> created_at -> format('Y/m/d H/i/s');
+      $consult['createdAt'] = $match -> created_at -> format('Y/m/d H:i:s');
       
       $consult['status'] = $match -> status;
 
@@ -174,10 +174,10 @@ class MessageController extends Controller
       $userinfo['userid'] = $user_info -> id;
       $userinfo['firstName'] = $user_info -> firstName;
       $userinfo['lastName'] = $user_info -> lastName;
-      $userinfo['birthday'] = Carbon::parse($user_info -> birthday) -> format('Y/m/d H/i/s');
+      $userinfo['birthday'] = Carbon::parse($user_info -> birthday) -> format('Y/m/d H:i:s');
       $userinfo['score'] = $score;
       $concern['userinfo'] = $userinfo;
-      $concern['createdAt'] = $user_info -> created_at -> format('Y/m/d H/i/s');
+      $concern['createdAt'] = $user_info -> created_at -> format('Y/m/d H:i:s');
       $concerns[] = $concern;
     }
     $concern_list['concern_list'] = $concerns;
@@ -205,7 +205,7 @@ class MessageController extends Controller
       $senderInfo['profileLink'] = $sender -> profile() -> first() -> profileLink;
       $message_info = $message -> contents;
       $image_link = $message -> image_link;
-      $createdAt = $message -> created_at -> format('Y/m/d H/i/s');
+      $createdAt = $message -> created_at -> format('Y/m/d H:i:s');
       $message_row['senderInfo'] = $senderInfo;
       $message_row['message'] = $message_info;
       $message_row['imageLink'] = $image_link;
@@ -237,7 +237,7 @@ class MessageController extends Controller
     $senderInfo['profileLink'] = $sender -> profile() -> first() -> profileLink;
     $message_info = $message -> contents;
     $image_link = $message -> image_link;
-    $createdAt = $message -> created_at -> format('Y/m/d H/i/s');
+    $createdAt = $message -> created_at -> format('Y/m/d H:i:s');
     $message_row['senderInfo'] = $senderInfo;
     $message_row['message'] = $message_info;
     $message_row['imageLink'] = $image_link;
