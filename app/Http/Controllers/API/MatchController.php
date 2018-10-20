@@ -38,7 +38,7 @@ public $successStatus = 200;
     
     $num_per_page = 10;
     $users = DB::select("SELECT
-        users.id as userid, prof_arr.profileLink, scores.score, prof_arr.location, users.firstName, users.lastName, DATE_FORMAT(users.birthday,'%Y/%m/%d'), prof_arr.portfollio,  prof_arr.isConsult, CASE WHEN
+        users.id as userid, prof_arr.profileLink, scores.score, prof_arr.location, users.firstName, users.lastName, DATE_FORMAT(users.birthday ,'%Y/%m/%d') as birthday, prof_arr.portfollio,  prof_arr.isConsult, CASE WHEN
             prof_arr.target_id IS NOT NULL THEN
             true ELSE false 
           END  as isConcern, matches.status as isConsult
