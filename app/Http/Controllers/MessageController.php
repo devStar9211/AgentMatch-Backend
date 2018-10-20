@@ -118,7 +118,7 @@ class MessageController extends Controller
       $consult['userinfo'] = $userinfo;
       $consult['consultId'] = $match -> id;
       $consult['threadId'] = $match -> id;
-      $consult['createdAt'] = $match -> created_at -> format('Y/m/d');
+      $consult['createdAt'] = $match -> created_at -> format('Y/m/d h:i:s');
       
       $consult['status'] = $match -> status;
 
@@ -205,7 +205,7 @@ class MessageController extends Controller
       $senderInfo['profileLink'] = $sender -> profile() -> first() -> profileLink;
       $message_info = $message -> contents;
       $image_link = $message -> image_link;
-      $createdAt = $message -> created_at -> format('Y/m/d');
+      $createdAt = $message -> created_at -> format('Y/m/d h:i:s');
       $message_row['senderInfo'] = $senderInfo;
       $message_row['message'] = $message_info;
       $message_row['imageLink'] = $image_link;
@@ -237,7 +237,7 @@ class MessageController extends Controller
     $senderInfo['profileLink'] = $sender -> profile() -> first() -> profileLink;
     $message_info = $message -> contents;
     $image_link = $message -> image_link;
-    $createdAt = $message -> created_at -> format('Y/m/d');
+    $createdAt = $message -> created_at -> format('Y/m/d h:i:s');
     $message_row['senderInfo'] = $senderInfo;
     $message_row['message'] = $message_info;
     $message_row['imageLink'] = $image_link;
