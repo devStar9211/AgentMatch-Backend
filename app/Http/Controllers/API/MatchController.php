@@ -62,6 +62,7 @@ public $successStatus = 200;
       } else {
         $user->isConcern = false;
       }
+      $user -> birthday .= "";
     }
     $response['response']['user_list'] = $users;
     $response['success'] = true;
