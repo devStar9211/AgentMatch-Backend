@@ -177,7 +177,7 @@ class MessageController extends Controller
       $userinfo['birthday'] = Carbon::parse($user_info -> birthday) -> format('Y/m/d');
       $userinfo['score'] = $score;
       $concern['userinfo'] = $userinfo;
-      $concern['createdAt'] = $user_info -> created_at -> format('Y/m/d');
+      $concern['createdAt'] = $user_info -> created_at -> format('Y/m/d h:i:s');
       $concerns[] = $concern;
     }
     $concern_list['concern_list'] = $concerns;
