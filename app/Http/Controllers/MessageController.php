@@ -196,18 +196,12 @@ class MessageController extends Controller
     $threadId = $input['threadId'];
     $match = Match::find($threadId);
     $messages = Message::where('match_id', $threadId) -> get();
-    if ($match -> a_id == $user -> id) {
-      $isSent = true;
-        $target = User::find($match -> b_id);
-      }
-      else {$target = User::find($match -> a_id);
-        $isSent = false;}
-      
     foreach ($messages as $index => $message) {
-      $senderInfo['userId'] = $target -> id;
-      $senderInfo['firstName'] = $target -> firstName;
-      $senderInfo['lastName'] = $target -> lastName;
-      $senderInfo['profileLink'] = $target -> profile() -> first() -> profileLink;
+      $senderInfo['userId'] = $message -> sender_id;
+      $sender = User::find($message -> sender_id);
+      $senderInfo['firstName'] = $sender -> firstName;
+      $senderInfo['lastName'] = $sender -> lastName;
+      $senderInfo['profileLink'] = $sender -> profile() -> first() -> profileLink;
       $message_info = $message -> contents;
       $image_link = $message -> image_link;
       $createdAt = $message -> created_at -> toDateTimeString();
@@ -215,7 +209,6 @@ class MessageController extends Controller
       $message_row['message'] = $message_info;
       $message_row['imageLink'] = $image_link;
       $message_row['createdAt'] = $createdAt;
-      $message_row['isSent'] = $isSent;
       $message_list[] = $message_row;
     }
     $response['success'] = true;
@@ -236,17 +229,11 @@ class MessageController extends Controller
     $threadId = $input['threadId'];
     $match = Match::find($threadId);
     $message = Message::where('match_id', $threadId) -> latest() -> first();
-    if ($match -> a_id == $user -> id) {
-      $isSent = true;
-        $target = User::find($match -> b_id);
-      }
-    else {$target = User::find($match -> a_id);
-        $isSent = false;}
-      
-    $senderInfo['userId'] = $target -> id;
-    $senderInfo['firstName'] = $target -> firstName;
-    $senderInfo['lastName'] = $target -> lastName;
-    $senderInfo['profileLink'] = $target -> profile() -> first() -> profileLink;
+    $sender = User::find($message -> sender_id);
+    $senderInfo['userId'] = $sender -> id;
+    $senderInfo['firstName'] = $sender -> firstName;
+    $senderInfo['lastName'] = $sender -> lastName;
+    $senderInfo['profileLink'] = $sender -> profile() -> first() -> profileLink;
     $message_info = $message -> contents;
     $image_link = $message -> image_link;
     $createdAt = $message -> created_at -> toDateTimeString();
@@ -254,7 +241,6 @@ class MessageController extends Controller
     $message_row['message'] = $message_info;
     $message_row['imageLink'] = $image_link;
     $message_row['createdAt'] = $createdAt;
-    $message_row['isSent'] = $isSent;
     $response['message'] = $message_row;
     $response['success'] = true;
     return response() -> json($response);
