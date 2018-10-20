@@ -40,7 +40,7 @@ public $successStatus = 200;
     $users = DB::select("SELECT
         users.id as userid, prof_arr.profileLink, scores.score, prof_arr.location, users.firstName, users.lastName, users.birthday, prof_arr.portfollio,  prof_arr.isConsult, CASE WHEN
             prof_arr.target_id IS NOT NULL THEN
-            'TRUE' ELSE 'FALSE' 
+            true ELSE false 
           END  as isConcern, matches.status as isConsult
       FROM
         users
@@ -56,6 +56,13 @@ public $successStatus = 200;
       AND users.id <> ".$user->id.$where."
       ORDER BY users.id
       LIMIT ".($page-1)*$num_per_page.", ".$num_per_page);
+    foreach ($users as $user) {
+      if($user->isConcern == 1) {
+        $user->isConcern = true;
+      } else {
+        $user->isConcern = false;
+      }
+    }
     $response['response']['user_list'] = $users;
     $response['success'] = true;
     return response() -> json($response, 202);
