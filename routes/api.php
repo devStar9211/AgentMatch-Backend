@@ -33,6 +33,6 @@ Route::get('consult/get_list', 'MessageController@index');
 Route::get('concern/get_list', 'MessageController@get_concern_list');
 Route::post('messages/send', 'MessageController@send');
 Route::post('consult/request', "API\MatchController@request_consult");
-Route::post('consult/accept', "API\MatchController@accept_consult");
+Route::post('consult/accept_request', "API\MatchController@accept_consult");
 Route::GET('messages/get_message', 'MessageController@get_message');
 Route::GET('messages/get_last_message', 'MessageController@get_last_message');

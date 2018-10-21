@@ -38,10 +38,10 @@ public $successStatus = 200;
     
     $num_per_page = 10;
     $users = DB::select("SELECT
-        users.id as userid, prof_arr.profileLink, scores.score, prof_arr.location, users.firstName, users.lastName, DATE_FORMAT(users.birthday ,'%Y/%m/%d %H:%i:%s') as birthday, prof_arr.portfollio,  prof_arr.isConsult, CASE WHEN
+        users.id as userid, prof_arr.profileLink, scores.score, prof_arr.location, users.firstName, users.lastName, DATE_FORMAT(users.birthday ,'%Y/%m/%d %H:%i:%s') as birthday, prof_arr.portfollio, CASE WHEN
             prof_arr.target_id IS NOT NULL THEN
             true ELSE false 
-          END  as isConcern, matches.status as isConsult
+          END  as isConcern, CASE WHEN matches.status IS NOT NULL THEN matches.status ELSE 0 END as isConsult
       FROM
         users
         LEFT OUTER JOIN ( SELECT profiles.*, concern_arr.target_id
@@ -167,7 +167,7 @@ public $successStatus = 200;
     return response() -> json($response, 202);
   }
 
-  public function accept_consult() {
+  public function accept_consult(Request $request) {
     $input = $request->all(); 
     $user = User::where('remember_token', $input['token'])->first();
     if ($user == null) {
