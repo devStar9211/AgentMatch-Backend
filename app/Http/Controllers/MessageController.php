@@ -60,7 +60,7 @@ class MessageController extends Controller
         $userinfo['firstName'] = $target -> firstName;
         $userinfo['lastName'] = $target -> lastName;
         $userinfo['profileLink'] = $profile -> profileLink;
-        $consult['userinfo'] = $userinfo;
+        $consult['userInfo'] = $userinfo;
         $consult['consultId'] = $match -> id;
         $consult['threadId'] = $match -> id;
         // $consult['createdAt'] = $match -> created_at -> format('Y/m/d H:i:s');
