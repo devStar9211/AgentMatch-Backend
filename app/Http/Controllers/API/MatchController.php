@@ -56,13 +56,19 @@ public $successStatus = 200;
       AND users.id <> ".$user->id.$where."
       ORDER BY users.id
       LIMIT ".($page-1)*$num_per_page.", ".$num_per_page);
-    foreach ($users as $user) {
-      if($user->isConcern == 1) {
-        $user->isConcern = true;
-      } else {
-        $user->isConcern = false;
+    if (sizeof($users) != 0) {
+      # code...
+      
+      foreach ($users as $user) {
+        if($user->isConcern == 1) {
+          $user->isConcern = true;
+        } else {
+          $user->isConcern = false;
+        }
+        $user -> birthday .= "";
       }
-      $user -> birthday .= "";
+    } else {
+      $users = array();
     }
     $response['response']['user_list'] = $users;
     $response['success'] = true;

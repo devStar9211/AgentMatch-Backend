@@ -117,17 +117,23 @@ class MessageController extends Controller
       return response() -> json($response, 405);
     }
     $targets = Concern::where('user_id', $user -> id) -> get();
-    foreach ($targets as $index => $target) {
-      $user_info = User::find($target -> target_id);
-      $score = Score::where('target_id', $target -> target_id)->avg('score');
-      $userinfo['userid'] = $user_info -> id;
-      $userinfo['firstName'] = $user_info -> firstName;
-      $userinfo['lastName'] = $user_info -> lastName;
-      $userinfo['birthday'] = Carbon::parse($user_info -> birthday) -> format('Y/m/d H:i:s');
-      $userinfo['score'] = $score;
-      $concern['userInfo'] = $userinfo;
-      $concern['createdAt'] = $user_info -> created_at -> format('Y/m/d H:i:s');
-      $concerns[] = $concern;
+    if (sizeof($targets) != 0) {
+      # code...
+      
+      foreach ($targets as $index => $target) {
+        $user_info = User::find($target -> target_id);
+        $score = Score::where('target_id', $target -> target_id)->avg('score');
+        $userinfo['userid'] = $user_info -> id;
+        $userinfo['firstName'] = $user_info -> firstName;
+        $userinfo['lastName'] = $user_info -> lastName;
+        $userinfo['birthday'] = Carbon::parse($user_info -> birthday) -> format('Y/m/d H:i:s');
+        $userinfo['score'] = $score;
+        $concern['userInfo'] = $userinfo;
+        $concern['createdAt'] = $user_info -> created_at -> format('Y/m/d H:i:s');
+        $concerns[] = $concern;
+      }
+    } else {
+      $concerns = array();
     }
     $concern_list['concern_list'] = $concerns;
     $response['response'] = $concern_list;
@@ -146,20 +152,26 @@ class MessageController extends Controller
     $threadId = $input['threadId'];
     $match = Match::find($threadId);
     $messages = Message::where('match_id', $threadId) -> get();
-    foreach ($messages as $index => $message) {
-      $senderInfo['userId'] = $message -> sender_id;
-      $sender = User::find($message -> sender_id);
-      $senderInfo['firstName'] = $sender -> firstName;
-      $senderInfo['lastName'] = $sender -> lastName;
-      $senderInfo['profileLink'] = $sender -> profile() -> first() -> profileLink;
-      $message_info = $message -> contents;
-      $image_link = $message -> image_link;
-      $createdAt = $message -> created_at -> format('Y/m/d H:i:s');
-      $message_row['senderInfo'] = $senderInfo;
-      $message_row['message'] = $message_info;
-      $message_row['imageLink'] = $image_link;
-      $message_row['createdAt'] = $createdAt;
-      $message_list[] = $message_row;
+    if (sizeof($messages) != 0) {
+      # code...
+      
+      foreach ($messages as $index => $message) {
+        $senderInfo['userId'] = $message -> sender_id;
+        $sender = User::find($message -> sender_id);
+        $senderInfo['firstName'] = $sender -> firstName;
+        $senderInfo['lastName'] = $sender -> lastName;
+        $senderInfo['profileLink'] = $sender -> profile() -> first() -> profileLink;
+        $message_info = $message -> contents;
+        $image_link = $message -> image_link;
+        $createdAt = $message -> created_at -> format('Y/m/d H:i:s');
+        $message_row['senderInfo'] = $senderInfo;
+        $message_row['message'] = $message_info;
+        $message_row['imageLink'] = $image_link;
+        $message_row['createdAt'] = $createdAt;
+        $message_list[] = $message_row;
+      }
+    } else {
+      $message_list = array();
     }
     $response['success'] = true;
     // $response['messages'] = $messages;
