@@ -42,30 +42,36 @@ class MessageController extends Controller
     else {
       $matches = Match::where('b_id', $user -> id)->get(); 
     }
-    foreach ($matches as $index => $match) {
+    if (sizeof($matches) != 0) {
       # code...
-      if ($type == 'true') {
-        $target = User::find($match->b_id);
+    
+      foreach ($matches as $index => $match) {
+        # code...
+        if ($type == 'true') {
+          $target = User::find($match->b_id);
+        }
+        else {
+          $target = User::find($match->a_id);
+        }
+        
+        $profile = $target -> profile() -> first();
+
+        $userinfo['userid'] = $target -> id;
+        $userinfo['firstName'] = $target -> firstName;
+        $userinfo['lastName'] = $target -> lastName;
+        $userinfo['profileLink'] = $profile -> profileLink;
+        $consult['userinfo'] = $userinfo;
+        $consult['consultId'] = $match -> id;
+        $consult['threadId'] = $match -> id;
+        // $consult['createdAt'] = $match -> created_at -> format('Y/m/d H:i:s');
+        
+        $consult['status'] = $match -> status;
+
+
+        $consults[] = $consult;
       }
-      else {
-        $target = User::find($match->a_id);
-      }
-      
-      $profile = $target -> profile() -> first();
-
-      $userinfo['userid'] = $target -> id;
-      $userinfo['firstName'] = $target -> firstName;
-      $userinfo['lastName'] = $target -> lastName;
-      $userinfo['profileLink'] = $profile -> profileLink;
-      $consult['userinfo'] = $userinfo;
-      $consult['consultId'] = $match -> id;
-      $consult['threadId'] = $match -> id;
-      // $consult['createdAt'] = $match -> created_at -> format('Y/m/d H:i:s');
-      
-      $consult['status'] = $match -> status;
-
-
-      $consults[] = $consult;
+    } else {
+      $consults = array();
     }
     // $response['matches'] = $matches;
     $consult_list['consult_list'] = $consults;
