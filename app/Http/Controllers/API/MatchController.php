@@ -189,4 +189,21 @@ public $successStatus = 200;
     return response() -> json($response, 202);
   }
 
+   public function update_signal_id(Request $request){
+    $input = $request->all(); 
+    $concern = new Concern;
+    $user = User::where('remember_token', $input['token'])->first();
+    if ($user == null) {
+      # code...
+      $response['message'] = "Unauthorized";
+      $response['success'] = false;
+      return response() -> json($response, 405);
+    }
+    $signal_id = $input['signalId'];
+    $user -> signal_id = $signal_id;
+    $user -> save();
+    $response['success'] = true;
+    return response() -> json($response, 202);
+  }
+
 }

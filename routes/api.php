@@ -35,4 +35,5 @@ Route::post('messages/send', 'MessageController@send');
 Route::post('consult/request', "API\MatchController@request_consult");
 Route::post('consult/accept_request', "API\MatchController@accept_consult");
 Route::GET('messages/get_message', 'MessageController@get_message');
-Route::GET('messages/get_last_message', 'MessageController@get_last_message');
+Route::GET('messages/get_individual_message', 'MessageController@get_individual_message');
+Route::post('user/update_signal_id', "API\MatchController@update_signal_id");

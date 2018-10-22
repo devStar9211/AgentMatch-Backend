@@ -100,6 +100,7 @@ class MessageController extends Controller
 
     $message = new Message;
     $message->sender_id = $user->id;
+    $message -> match_id = $match -> id;
     $message->receiver_id = $target;
     $message->contents = $input['message'];
     $message->save();
@@ -181,7 +182,7 @@ class MessageController extends Controller
 
   }
 
-  public function get_last_message(Request $request) {
+  public function get_individual_message(Request $request) {
     $input = $request -> all();
     $user = User::where('remember_token', $input['token'])->first();
     if ($user == null) {
@@ -190,8 +191,9 @@ class MessageController extends Controller
       return response() -> json($response, 405);
     }
     $threadId = $input['threadId'];
+    $messageId = $input['messageId'];
     $match = Match::find($threadId);
-    $message = Message::where('match_id', $threadId) -> latest() -> first();
+    $message = Message::where('match_id', $threadId) -> where('id', $messageId) -> get() -> first();
     $sender = User::find($message -> sender_id);
     $senderInfo['userId'] = $sender -> id;
     $senderInfo['firstName'] = $sender -> firstName;
