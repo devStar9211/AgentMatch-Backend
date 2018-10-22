@@ -200,7 +200,7 @@ public $successStatus = 200;
       return response() -> json($response, 405);
     }
     $signal_id = $input['signalId'];
-    $user -> signal_id = $signal_id;
+    $user -> signalId = $signal_id;
     $user -> save();
     $response['success'] = true;
     return response() -> json($response, 202);
