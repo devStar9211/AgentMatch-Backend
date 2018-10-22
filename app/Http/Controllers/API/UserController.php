@@ -24,6 +24,7 @@ public $successStatus = 200;
         $ret_val['gradDate'] = $gradDate -> format('Y/m');
         $birthday = Carbon::createFromFormat('Y/m', $ret_val['gradDate']);
         $ret_val['birthday'] = $birthday -> format('Y/m/d');
+        $ret_val['userId'] = $ret_val['id'];
         
         $response['response']['user_info'] = $ret_val;
         $response['success']=true; 
