@@ -166,6 +166,7 @@ class MessageController extends Controller
         $createdAt = $message -> created_at -> format('Y/m/d H:i:s');
         $message_row['senderInfo'] = $senderInfo;
         $message_row['message'] = $message_info;
+        $message_row['messageId'] = $message -> id;
         $message_row['imageLink'] = $image_link;
         $message_row['createdAt'] = $createdAt;
         $message_list[] = $message_row;
