@@ -199,6 +199,7 @@ class MessageController extends Controller
     $senderInfo['firstName'] = $sender -> firstName;
     $senderInfo['lastName'] = $sender -> lastName;
     $senderInfo['profileLink'] = $sender -> profile() -> first() -> profileLink;
+    $senderInfo['signalId'] = $sender -> signalId;
     $message_info = $message -> contents;
     $image_link = $message -> image_link;
     $createdAt = $message -> created_at -> format('Y/m/d H:i:s');
