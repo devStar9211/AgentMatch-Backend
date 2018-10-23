@@ -125,7 +125,7 @@ class MessageController extends Controller
       foreach ($targets as $index => $target) {
         $user_info = User::find($target -> target_id);
         $score = Score::where('target_id', $target -> target_id)->avg('score');
-        $userinfo['userid'] = $user_info -> id;
+        $userinfo['userId'] = $user_info -> id;
         $userinfo['firstName'] = $user_info -> firstName;
         $userinfo['lastName'] = $user_info -> lastName;
         $userinfo['birthday'] = Carbon::parse($user_info -> birthday) -> format('Y/m/d H:i:s');
