@@ -56,7 +56,7 @@ class MessageController extends Controller
         
         $profile = $target -> profile() -> first();
 
-        $userinfo['userid'] = $target -> id;
+        $userinfo['userId'] = $target -> id;
         $userinfo['firstName'] = $target -> firstName;
         $userinfo['lastName'] = $target -> lastName;
         $userinfo['profileLink'] = $profile -> profileLink;
