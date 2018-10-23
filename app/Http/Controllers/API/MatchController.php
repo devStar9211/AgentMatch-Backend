@@ -41,7 +41,7 @@ public $successStatus = 200;
         users.id as userId, prof_arr.profileLink, scores.score, prof_arr.location, users.firstName, users.lastName, DATE_FORMAT(users.birthday ,'%Y/%m/%d %H:%i:%s') as birthday, prof_arr.portfollio, CASE WHEN
             prof_arr.target_id IS NOT NULL THEN
             true ELSE false 
-          END  as isConcern, CASE WHEN matches.status IS NOT NULL THEN matches.status ELSE 0 END as isConsult
+          END  as isConcern, CASE WHEN matches.status IS NOT NULL THEN matches.status ELSE 0 END as isConsult, users.signalId as signalId
       FROM
         users
         LEFT OUTER JOIN ( SELECT profiles.*, concern_arr.target_id
