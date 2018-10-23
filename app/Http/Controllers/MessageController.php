@@ -60,6 +60,7 @@ class MessageController extends Controller
         $userinfo['firstName'] = $target -> firstName;
         $userinfo['lastName'] = $target -> lastName;
         $userinfo['profileLink'] = $profile -> profileLink;
+        $userinfo['signalId'] = $target -> signalId;
         $consult['userInfo'] = $userinfo;
         $consult['consultId'] = $match -> id;
         $consult['threadId'] = $match -> id;
@@ -151,7 +152,11 @@ class MessageController extends Controller
       $response['success'] = false;
       return response() -> json($response, 405);
     }
-    $threadId = $input['threadId'];
+    if (array_key_exists('threadId', $input)) {
+      # code...
+      $threadId = $input['threadId'];
+    }
+    
     $match = Match::find($threadId);
     $messages = Message::where('match_id', $threadId) -> get();
     if (sizeof($messages) != 0) {
