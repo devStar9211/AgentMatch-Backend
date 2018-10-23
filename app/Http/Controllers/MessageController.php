@@ -131,6 +131,19 @@ class MessageController extends Controller
         $userinfo['lastName'] = $user_info -> lastName;
         $userinfo['birthday'] = Carbon::parse($user_info -> birthday) -> format('Y/m/d H:i:s');
         $userinfo['score'] = $score;
+        $userinfo['profileLink'] = $user_info -> profile() -> first() -> profileLink;
+        $userinfo['signalId'] = $user_info -> signalId;
+        $match = Match::where(function($query) use($user_info, $user) {
+          return $query -> where('a_id', $user -> id) -> where('b_id', $user_info -> id);
+        }) -> orWhere(function($query) use ($user, $user_info) {
+          return $query -> where('a_id', $user_info->id) -> where('b_id', $user -> id);
+        }) -> first();
+        if (!is_null($match)) {
+          # code...
+          $userinfo['isConsult'] = $match -> id;
+        } else {
+          $userinfo['isConsult'] = 0;
+        }
         $concern['userInfo'] = $userinfo;
         $concern['createdAt'] = $user_info -> created_at -> format('Y/m/d H:i:s');
         $concerns[] = $concern;

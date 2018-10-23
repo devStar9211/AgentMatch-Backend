@@ -111,7 +111,7 @@ public $successStatus = 200;
     return response() -> json($response, 202);
   }
 
-  public function removeConcern($token, $target_id){
+  public function removeConcern(Request $request){
     $input = $request->all(); 
     $user = User::where('remember_token', $input['token'])->first();
     if ($user == null) {
@@ -120,6 +120,7 @@ public $successStatus = 200;
       $response['success'] = false;
       return response() -> json($response, 405);
     }
+    $target_id = $input['']
     $concern = Concern::WHERE('user_id', $user->id)->WHERE('target_id', $target_id)->first();
     $concern -> remove();
     $response['success'] = true;
