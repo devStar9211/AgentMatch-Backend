@@ -120,9 +120,8 @@ public $successStatus = 200;
       $response['success'] = false;
       return response() -> json($response, 405);
     }
-    $target_id = $input['']
-    $concern = Concern::WHERE('user_id', $user->id)->WHERE('target_id', $target_id)->first();
-    $concern -> remove();
+    $target_id = $input['to'];
+    $concern = DB::table('concerns')->where('user_id', $user->id)->WHERE('target_id', $target_id)->delete();
     $response['success'] = true;
     return response() -> json($response, 202);
   }
