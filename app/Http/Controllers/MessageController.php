@@ -105,6 +105,7 @@ class MessageController extends Controller
     $message->contents = $input['message'];
     $message->save();
     $response['success'] = true;
+    $response['response']['messageId'] = $message -> id;
     return response() -> json($response, 202);
   }
 
