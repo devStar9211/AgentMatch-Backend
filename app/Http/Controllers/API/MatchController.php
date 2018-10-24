@@ -37,27 +37,6 @@ public $successStatus = 200;
     }
     
     $num_per_page = 10;
-    // $users = DB::select("SELECT
-    //     users.id as userId, prof_arr.profileLink, scores.score, prof_arr.location, users.firstName, users.lastName, DATE_FORMAT(users.birthday ,'%Y/%m/%d %H:%i:%s') as birthday, prof_arr.portfollio, CASE WHEN
-    //         prof_arr.target_id IS NOT NULL THEN
-    //         true ELSE false 
-    //       END  as isConcern, CASE WHEN matches.status IS NOT NULL THEN matches.status ELSE 0 END as isConsult, users.signalId as signalId
-    //   FROM
-    //     users
-    //     LEFT OUTER JOIN ( SELECT profiles.*, concern_arr.target_id
-    //   FROM
-    // `profiles` LEFT OUTER JOIN ( SELECT * FROM concerns WHERE concerns.user_id = ".$user->id." ) AS concern_arr ON PROFILES.user_id = concern_arr.target_id 
-    //     ) AS prof_arr ON users.id = prof_arr.user_id
-    //   LEFT OUTER JOIN ( SELECT AVG( scores.score ) AS score, target_id FROM scores GROUP BY scores.target_id ) AS scores ON scores.target_id = `users`.id 
-    //   LEFT OUTER JOIN matches ON ( matches.a_id = ".$user->id." AND matches.b_id = users.id ) OR ( matches.a_id = users.id AND matches.b_id = ".$user->id." )
-    //   WHERE
-    //     (users.firstName LIKE '%".$keyword."%'
-    //     OR users.lastName LIKE '%".$keyword."%' )
-    //   AND users.id <> ".$user->id.$where."
-    //   ORDER BY users.id
-    //   GROUP BY users.id
-    //   LIMIT ".($page-1)*$num_per_page.", ".$num_per_page);
-
     $users = User::where('id', '<>', $user->id)->skip(($page-1)*$num_per_page) -> take($num_per_page) -> get();
 
     if (sizeof($users) != 0) {
