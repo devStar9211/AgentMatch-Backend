@@ -55,6 +55,7 @@ public $successStatus = 200;
         OR users.lastName LIKE '%".$keyword."%' )
       AND users.id <> ".$user->id.$where."
       ORDER BY users.id
+      GROUP BY users.id
       LIMIT ".($page-1)*$num_per_page.", ".$num_per_page);
     if (sizeof($users) != 0) {
       # code...
@@ -167,8 +168,9 @@ public $successStatus = 200;
     $match -> status = 1;
     $match -> save();
     $response['success'] = true;
-    $data['thread_id'] = $match -> id;
+    $data['consultId'] = $match -> id;
     $data['status'] = 1;
+
     $response['response'] = $data;
     return response() -> json($response, 202);
   }
@@ -183,7 +185,23 @@ public $successStatus = 200;
       return response() -> json($response, 405);
     }
     $consult = Match::find($input['consultId']);
-    $consult -> status = $input['status'];
+    $consult -> status = 2;
+    $consult -> save();
+    $response['success'] = true;
+    return response() -> json($response, 202);
+  }
+
+  public function reject_consult(Request $request) {
+    $input = $request->all(); 
+    $user = User::where('remember_token', $input['token'])->first();
+    if ($user == null) {
+      # code...
+      $response['message'] = "Unauthorized";
+      $response['success'] = false;
+      return response() -> json($response, 405);
+    }
+    $consult = Match::find($input['consultId']);
+    $consult -> status = 0;
     $consult -> save();
     $response['success'] = true;
     return response() -> json($response, 202);

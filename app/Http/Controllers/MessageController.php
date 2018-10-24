@@ -226,7 +226,7 @@ class MessageController extends Controller
     $message_row['message'] = $message_info;
     $message_row['imageLink'] = $image_link;
     $message_row['createdAt'] = $createdAt;
-    $response['message'] = $message_row;
+    $response['response']['message'] = $message_row;
     $response['success'] = true;
     return response() -> json($response);
   }
