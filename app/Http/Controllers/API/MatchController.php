@@ -58,7 +58,7 @@ public $successStatus = 200;
     //   GROUP BY users.id
     //   LIMIT ".($page-1)*$num_per_page.", ".$num_per_page);
 
-    $users = User::all();
+    $users = User::where('id', '<>', $user->id)->skip(($page-1)*$num_per_page) -> take($num_per_page) -> get();
 
     if (sizeof($users) != 0) {
       # code...
