@@ -37,41 +37,79 @@ public $successStatus = 200;
     }
     
     $num_per_page = 10;
-    $users = DB::select("SELECT
-        users.id as userId, prof_arr.profileLink, scores.score, prof_arr.location, users.firstName, users.lastName, DATE_FORMAT(users.birthday ,'%Y/%m/%d %H:%i:%s') as birthday, prof_arr.portfollio, CASE WHEN
-            prof_arr.target_id IS NOT NULL THEN
-            true ELSE false 
-          END  as isConcern, CASE WHEN matches.status IS NOT NULL THEN matches.status ELSE 0 END as isConsult, users.signalId as signalId
-      FROM
-        users
-        LEFT OUTER JOIN ( SELECT profiles.*, concern_arr.target_id
-      FROM
-    `profiles` LEFT OUTER JOIN ( SELECT * FROM concerns WHERE concerns.user_id = ".$user->id." ) AS concern_arr ON PROFILES.user_id = concern_arr.target_id 
-        ) AS prof_arr ON users.id = prof_arr.user_id
-      LEFT OUTER JOIN ( SELECT AVG( scores.score ) AS score, target_id FROM scores GROUP BY scores.target_id ) AS scores ON scores.target_id = `users`.id 
-      LEFT OUTER JOIN matches ON ( matches.a_id = ".$user->id." AND matches.b_id = users.id ) OR ( matches.a_id = users.id AND matches.b_id = ".$user->id." )
-      WHERE
-        (users.firstName LIKE '%".$keyword."%'
-        OR users.lastName LIKE '%".$keyword."%' )
-      AND users.id <> ".$user->id.$where."
-      ORDER BY users.id
-      GROUP BY users.id
-      LIMIT ".($page-1)*$num_per_page.", ".$num_per_page);
+    // $users = DB::select("SELECT
+    //     users.id as userId, prof_arr.profileLink, scores.score, prof_arr.location, users.firstName, users.lastName, DATE_FORMAT(users.birthday ,'%Y/%m/%d %H:%i:%s') as birthday, prof_arr.portfollio, CASE WHEN
+    //         prof_arr.target_id IS NOT NULL THEN
+    //         true ELSE false 
+    //       END  as isConcern, CASE WHEN matches.status IS NOT NULL THEN matches.status ELSE 0 END as isConsult, users.signalId as signalId
+    //   FROM
+    //     users
+    //     LEFT OUTER JOIN ( SELECT profiles.*, concern_arr.target_id
+    //   FROM
+    // `profiles` LEFT OUTER JOIN ( SELECT * FROM concerns WHERE concerns.user_id = ".$user->id." ) AS concern_arr ON PROFILES.user_id = concern_arr.target_id 
+    //     ) AS prof_arr ON users.id = prof_arr.user_id
+    //   LEFT OUTER JOIN ( SELECT AVG( scores.score ) AS score, target_id FROM scores GROUP BY scores.target_id ) AS scores ON scores.target_id = `users`.id 
+    //   LEFT OUTER JOIN matches ON ( matches.a_id = ".$user->id." AND matches.b_id = users.id ) OR ( matches.a_id = users.id AND matches.b_id = ".$user->id." )
+    //   WHERE
+    //     (users.firstName LIKE '%".$keyword."%'
+    //     OR users.lastName LIKE '%".$keyword."%' )
+    //   AND users.id <> ".$user->id.$where."
+    //   ORDER BY users.id
+    //   GROUP BY users.id
+    //   LIMIT ".($page-1)*$num_per_page.", ".$num_per_page);
+
+    $users = User::all();
+
     if (sizeof($users) != 0) {
       # code...
       
-      foreach ($users as $user) {
-        if($user->isConcern == 1) {
-          $user->isConcern = true;
-        } else {
-          $user->isConcern = false;
+      foreach ($users as $cur_user) {
+        if ($cur_user -> id != $user -> id) {
+          # code...
+          $user_info['userId'] = $cur_user -> id;
+          $profile = $user -> profile() -> first();
+          $user_info['profileLink'] = $profile  -> profileLink;
+          $score = Score::where('target_id', $cur_user -> id) -> get();
+          if (!is_null($score)) {
+            # code...
+            $user_info['score'] = $score  -> avg('score');
+          } else {
+            $user_info['score'] = null;
+          }
+          
+          $user_info['location'] = $profile -> location;
+          $user_info['firstName'] = $cur_user -> firstName;
+          $user_info['lastName'] = $cur_user -> lastName;
+          $user_info['birthday'] = $cur_user -> birthday;
+          $user_info['portfollio'] = $profile -> portfollio;
+          $concern = Concern::where('user_id', $user -> id) -> where('target_id', $cur_user -> id) -> get();
+          if (sizeof($concern) != 0) {
+            $user_info['isConcern'] = true;
+          } else {
+            $user_info['isConcern'] = false;
+          }
+
+          $match = Match::where(function($query) use($cur_user, $user) {
+            return $query -> where('a_id', $user -> id) -> where('b_id', $cur_user -> id);
+          }) -> orWhere(function($query) use ($user, $cur_user) {
+            return $query -> where('a_id', $cur_user->id) -> where('b_id', $user -> id);
+          }) -> latest() -> first();
+
+          if (!is_null($match)) {
+            # code...
+            $user_info['isConsult'] = $match -> status;
+          } else {
+            $user_info['isConsult'] = 0;
+          }
+          $user_info['signalId'] = $cur_user -> signalId;
+          $user_list[] = $user_info;
         }
-        $user -> birthday .= "";
+        
       }
     } else {
-      $users = array();
+      $user_list = array();
     }
-    $response['response']['user_list'] = $users;
+    $response['response']['user_list'] = $user_list;
     $response['success'] = true;
     return response() -> json($response, 202);
   }
