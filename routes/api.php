@@ -38,3 +38,4 @@ Route::post('consult/reject_request', "API\MatchController@reject_consult");
 Route::GET('messages/get_message', 'MessageController@get_message');
 Route::GET('messages/get_individual_message', 'MessageController@get_individual_message');
 Route::post('user/update_signal_id', "API\MatchController@update_signal_id");
+Route::post('assets/upload_photo', 'API\MatchController@upload');

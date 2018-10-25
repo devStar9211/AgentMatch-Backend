@@ -11,6 +11,7 @@ use DB;
 use agent_match\Score;
 use agent_match\Match;
 use agent_match\Concern;
+use Storage;
 class MatchController extends Controller 
 {
 public $successStatus = 200;
@@ -240,5 +241,18 @@ public $successStatus = 200;
     $response['success'] = true;
     return response() -> json($response, 202);
   }
+
+  public function upload(Request $request)
+    {
+      $file = $request->file('image');
+      $filename = substr( md5( time() ), 0, 15) . '.jpg';
+
+      Storage::put($filename,file_get_contents($file));
+      $path = Storage::url('app/'.$filename);
+      $response['success'] = true;
+      $response['response']['imageLink'] = $path;
+      return response() -> json($response, 202);
+      
+    }
 
 }
