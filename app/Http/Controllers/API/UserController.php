@@ -77,8 +77,12 @@ public $successStatus = 200;
       return response()->json(['error'=>$validator->errors()], 401);            
     }
     $input = $request->all(); 
-    $input['password'] = bcrypt($input['password']); 
+    if (array_key_exists('password', $input)) {
+      # code...
+      $input['password'] = bcrypt($input['password']); 
 
+    }
+    
     $birthday = Carbon::createFromFormat('Y/m/d', $input['birthday']);
     $input['birthday'] =  $birthday->format('Y-m-d');
     $input['gradDate'] = $input['gradDate']."/1";
