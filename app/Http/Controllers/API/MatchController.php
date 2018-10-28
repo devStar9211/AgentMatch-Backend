@@ -47,7 +47,7 @@ public $successStatus = 200;
         if ($cur_user -> id != $user -> id) {
           # code...
           $user_info['userId'] = $cur_user -> id;
-          $profile = $user -> profile() -> first();
+          $profile = $cur_user -> profile() -> first();
           $user_info['profileLink'] = $profile  -> profileLink;
           $score = Score::where('target_id', $cur_user -> id) -> get();
           if (!is_null($score)) {
@@ -228,18 +228,29 @@ public $successStatus = 200;
    public function update_signal_id(Request $request){
     $input = $request->all(); 
     $concern = new Concern;
-    $user = User::where('remember_token', $input['token'])->first();
-    if ($user == null) {
+    if (!is_null($input['token'])) {
       # code...
-      $response['message'] = "Unauthorized";
-      $response['success'] = false;
-      return response() -> json($response, 405);
+      $user = User::where('remember_token', $input['token'])->first();
+       if ($user == null) {
+      # code...
+        $response['message'] = "Unauthorized";
+        $response['success'] = false;
+        return response() -> json($response, 405);
+      }
+      $signal_id = $input['signalId'];
+      $user -> signalId = $signal_id;
+      $user -> save();
+      $response['success'] = true;
+      return response() -> json($response, 202);
     }
-    $signal_id = $input['signalId'];
-    $user -> signalId = $signal_id;
-    $user -> save();
-    $response['success'] = true;
-    return response() -> json($response, 202);
+    else {
+      $response['success'] = false;
+      $response['message'] = "ログインしてください。";
+      return response() -> json($response, 202);
+    }
+    
+   
+    
   }
 
   public function upload(Request $request)
