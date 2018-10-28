@@ -39,3 +39,4 @@ Route::GET('messages/get_message', 'MessageController@get_message');
 Route::GET('messages/get_individual_message', 'MessageController@get_individual_message');
 Route::post('user/update_signal_id', "API\MatchController@update_signal_id");
 Route::post('assets/upload_photo', 'API\MatchController@upload');
+Route::post('user/login_with_facebook', "API\UserController@get_user_with_face");
