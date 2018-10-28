@@ -80,7 +80,7 @@ public $successStatus = 200;
       'email' => 'required|email'
     ]);
     if ($validator->fails()) { 
-      return response()->json(['error'=>$validator->errors()], 401);            
+      return response()->json(['error'=>$validator->errors()], 401);
     }
     $input = $request->all(); 
     if (array_key_exists('password', $input)) {
@@ -110,6 +110,8 @@ public $successStatus = 200;
     }
     
     $response['response']['user_id'] = $user -> id;
+    $response['response']['token'] = $user -> rollApiKey(); 
+    
     $response['success'] = true;
     $success['firstName'] =  $user->firstName;
     return response()->json($response, 202); 
