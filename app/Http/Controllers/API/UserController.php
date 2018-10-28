@@ -114,4 +114,30 @@ public $successStatus = 200;
       $user = Auth::user(); 
       return response()->json(['success' => $user], $this-> successStatus); 
   } 
+
+  public function get_user_with_face(Request $request){ 
+    $input = $request->all();
+        $user = User::where('face_token', $input['auth_token'])->first(); 
+        // $response['response']['token'] = $user -> rollApiKey(); 
+        if ($user) {
+          # code...
+          $ret_val = $user;
+        
+          $gradDate = Carbon::createFromFormat('Y-m-d', $ret_val['gradDate']);
+          $ret_val['gradDate'] = $gradDate -> format('Y/m');
+          $birthday = Carbon::createFromFormat('Y/m', $ret_val['gradDate']);
+          $ret_val['birthday'] = $birthday -> format('Y/m/d');
+          $ret_val['userId'] = $ret_val['id'];
+          $response['token'] = $user -> remember_token;
+          $response['response']['user_info'] = $ret_val;
+        }
+        else {
+          $response['token'] = null;
+          $response['response']['user_info'] = null;
+        }
+        
+        
+        $response['success']=true; 
+        return response()->json($response, $this-> successStatus); 
+    } 
 }
