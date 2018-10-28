@@ -41,10 +41,16 @@ public $successStatus = 200;
 
     $response['response']['token'] = $user -> rollApiKey(); 
     $ret_val = $user;
+    if (!is_null($ret_val['gradDate'])) {
+      # code...
+      $gradDate = Carbon::createFromFormat('Y-m-d', $ret_val['gradDate']);
+      $ret_val['gradDate'] = $gradDate -> format('Y/m');
+    }
+    else {
+      $ret_val['gradDate'] = "";
+    }
     
-    $gradDate = Carbon::createFromFormat('Y-m-d', $ret_val['gradDate']);
-    $ret_val['gradDate'] = $gradDate -> format('Y/m');
-    $birthday = Carbon::createFromFormat('Y/m', $ret_val['gradDate']);
+    $birthday = Carbon::createFromFormat('Y-m-d', $ret_val['birthday']);
     $ret_val['birthday'] = $birthday -> format('Y/m/d');
     $ret_val['userId'] = $ret_val['id'];
     $prof = $user -> profile();
@@ -85,9 +91,13 @@ public $successStatus = 200;
     
     $birthday = Carbon::createFromFormat('Y/m/d', $input['birthday']);
     $input['birthday'] =  $birthday->format('Y-m-d');
-    $input['gradDate'] = $input['gradDate']."/1";
-    $gradDate = Carbon::createFromFormat('Y/m/d', $input['gradDate']);
-    $input['gradDate']=$gradDate->format('Y-m-d');
+    if ($input['gradDate']!='') {
+      # code...
+      $input['gradDate'] = $input['gradDate']."/1";
+      $gradDate = Carbon::createFromFormat('Y/m/d', $input['gradDate']);
+      $input['gradDate']=$gradDate->format('Y-m-d');
+    }
+    
     try{
       $user = User::create($input); 
       $user -> authToken = $input['authToken'];
@@ -120,12 +130,20 @@ public $successStatus = 200;
       return response()->json(['error'=>$validator->errors()], 401);            
     }
     $input = $request->all(); 
-    $input['password'] = bcrypt($input['password']); 
+    if ($input['password']!='' || array_key_exists('password', $input)) {
+      # code...
+      $input['password'] = bcrypt($input['password']); 
+    }
+    
     $birthday = Carbon::createFromFormat('Y/m/d', $input['birthday']);
     $input['birthday']=$birthday->format('Y-m-d');
-    $input['gradDate'] = $input['gradDate']."/1";
-    $gradDate = Carbon::createFromFormat('Y/m/d', $input['gradDate']);
-    $input['gradDate']=$gradDate->format('Y-m-d');
+    if ($input['gradDate']!='') {
+      # code...
+      $input['gradDate'] = $input['gradDate']."/1";
+      $gradDate = Carbon::createFromFormat('Y/m/d', $input['gradDate']);
+      $input['gradDate']=$gradDate->format('Y-m-d');
+    }
+    
     
     try{
       $user = User::find($input['id']); 
