@@ -245,7 +245,6 @@ public $successStatus = 200;
     }
     else {
       $response['success'] = false;
-      $response['message'] = "ログインしてください。";
       return response() -> json($response, 202);
     }
     
