@@ -6,6 +6,7 @@ use agent_match\User;
 use Illuminate\Support\Facades\Auth; 
 use Validator;
 use Carbon;
+use agent_match\Profile;
 class UserController extends Controller 
 {
 public $successStatus = 200;
@@ -15,26 +16,50 @@ public $successStatus = 200;
      * @return \Illuminate\Http\Response 
      */ 
   public function login(){ 
-    if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){ 
-        $user = Auth::user(); 
-        $response['response']['token'] = $user -> rollApiKey(); 
-        $ret_val = $user;
-        
-        $gradDate = Carbon::createFromFormat('Y-m-d', $ret_val['gradDate']);
-        $ret_val['gradDate'] = $gradDate -> format('Y/m');
-        $birthday = Carbon::createFromFormat('Y/m', $ret_val['gradDate']);
-        $ret_val['birthday'] = $birthday -> format('Y/m/d');
-        $ret_val['userId'] = $ret_val['id'];
-        
-        $response['response']['user_info'] = $ret_val;
-        $response['success']=true; 
-        return response()->json($response, $this-> successStatus); 
-    } 
-    else{
+    if (request('authToken')) {
+      # code...
+      $user = User::where('email', request('email')) -> where('authToken', request('authToken')) -> first();
+
+      if(is_null($user)){ 
         $response['success']=false; 
         $response['message']="登録されていないユーザーです。";
         return response()->json($response, 401); 
-    } 
+      } 
+    }
+    elseif(request('password')) {
+      # code...
+      if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){ 
+          $user = Auth::user(); 
+          
+      } 
+      else{
+        $response['success']=false; 
+        $response['message']="登録されていないユーザーです。";
+        return response()->json($response, 401); 
+      } 
+    }
+
+    $response['response']['token'] = $user -> rollApiKey(); 
+    $ret_val = $user;
+    
+    $gradDate = Carbon::createFromFormat('Y-m-d', $ret_val['gradDate']);
+    $ret_val['gradDate'] = $gradDate -> format('Y/m');
+    $birthday = Carbon::createFromFormat('Y/m', $ret_val['gradDate']);
+    $ret_val['birthday'] = $birthday -> format('Y/m/d');
+    $ret_val['userId'] = $ret_val['id'];
+    $prof = $user -> profile();
+    if (array_key_exists('profileLink', $prof)) {
+      # code...
+      $ret_val['profileLink'] = $prof -> profileLink;
+    } else {
+      $ret_val['profileLink'] = "";
+    }
+    
+    $response['response']['user_info'] = $ret_val;
+    $response['success']=true; 
+    return response()->json($response, $this-> successStatus); 
+    
+    
   }
 
   
@@ -54,6 +79,7 @@ public $successStatus = 200;
     }
     $input = $request->all(); 
     $input['password'] = bcrypt($input['password']); 
+
     $birthday = Carbon::createFromFormat('Y/m/d', $input['birthday']);
     $input['birthday'] =  $birthday->format('Y-m-d');
     $input['gradDate'] = $input['gradDate']."/1";
@@ -61,6 +87,11 @@ public $successStatus = 200;
     $input['gradDate']=$gradDate->format('Y-m-d');
     try{
       $user = User::create($input); 
+      $user -> authToken = $input['authToken'];
+      $user -> update();
+      $pro_data['user_id'] = $user -> id;
+      $pro_data['profileLink'] = $input['profileLink'];
+      $profile = profile::create($pro_data);
     } catch (Exception $exception) {
       return back()->withError($exception->getMessage())->withInput();
     }
@@ -96,9 +127,16 @@ public $successStatus = 200;
     try{
       $user = User::find($input['id']); 
       $user->update($input);
+      $prof = $user -> profile();
+      if ($prof) {
+        # code...
+        $prof -> profileLink = $input['profileLink'];
+        $prof -> update();
+      }
     } catch (Exception $exception){
       return response()->json(['error'=>$exception->messages()], 401);  
     }
+
     $response['response']['user_id'] = $user -> id;
     $response['success'] = true;
     $success['firstName'] =  $user->firstName;
@@ -117,7 +155,7 @@ public $successStatus = 200;
 
   public function get_user_with_face(Request $request){ 
     $input = $request->all();
-        $user = User::where('face_token', $input['auth_token'])->first(); 
+        $user = User::where('authToken', $input['authToken'])->first(); 
         // $response['response']['token'] = $user -> rollApiKey(); 
         if ($user) {
           # code...
@@ -127,9 +165,12 @@ public $successStatus = 200;
           $ret_val['gradDate'] = $gradDate -> format('Y/m');
           $birthday = Carbon::createFromFormat('Y/m', $ret_val['gradDate']);
           $ret_val['birthday'] = $birthday -> format('Y/m/d');
+          $prof = $user -> profile();
+          $ret_val['profileLink'] = $prof -> profileLink;
           $ret_val['userId'] = $ret_val['id'];
           $response['token'] = $user -> remember_token;
           $response['response']['user_info'] = $ret_val;
+
         }
         else {
           $response['token'] = null;
