@@ -71,8 +71,7 @@ public $successStatus = 200;
   public function register(Request $request) 
   { 
     $validator = Validator::make($request->all(), [ 
-      'email' => 'required|email',
-      'password' => 'required'
+      'email' => 'required|email'
     ]);
     if ($validator->fails()) { 
       return response()->json(['error'=>$validator->errors()], 401);            
