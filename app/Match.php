@@ -23,4 +23,8 @@ class Match extends Model
   public function messages() {
     return $this->hasMany(Message::Class);
   }
+
+  public function match_counts(int $id) {
+    return $this->where('a_id', $id)->orWhere('b_id', $id)->count();
+  }
 }
