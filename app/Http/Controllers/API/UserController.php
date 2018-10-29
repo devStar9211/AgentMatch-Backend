@@ -191,7 +191,7 @@ public $successStatus = 200;
       }
       $ret_val = $user;
       $response['gradDate'] = $ret_val['gradDate'];
-      if ($ret_val['gradDate']!='') {
+      if (!is_null($ret_val['gradDate'])) {
         # code...
         $gradDate = Carbon::createFromFormat('Y-m-d', $ret_val['gradDate']);
         $ret_val['gradDate'] = $gradDate -> format('Y/m');
