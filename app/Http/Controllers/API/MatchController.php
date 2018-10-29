@@ -25,9 +25,8 @@ public $successStatus = 200;
     if (array_key_exists("page", $input)) $page = $input['page'];
     else $page = 1;
     
-    if (array_key_exists("keyword", $input)) $keyword = $input['keyword'];
+    if (array_key_exists("keyword", $input) && $input['keyword'] != '') $keyword = $input['keyword'];
     else $keyword = "";
-    $where = "";
     if (array_key_exists("concern", $input)) $where = " AND prof_arr.target_id IS NOT NULL";
     $user = User::where('remember_token', $token)->first();
     if ($user == null) {
@@ -38,7 +37,7 @@ public $successStatus = 200;
     }
     
     $num_per_page = 10;
-    $users = User::where('id', '<>', $user->id)->skip(($page-1)*$num_per_page) -> take($num_per_page) -> get();
+    $users = User::where('id', '<>', $user->id)->where('firstName', "LIKE", "%".$keyword."%")->orWhere('lastName', "LIKE", "%".$keyword."%")->skip(($page-1)*$num_per_page) -> take($num_per_page) -> get();
 
     if (sizeof($users) != 0) {
       # code...
