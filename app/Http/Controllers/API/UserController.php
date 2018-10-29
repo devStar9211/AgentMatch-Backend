@@ -111,7 +111,7 @@ public $successStatus = 200;
     
     $response['response']['user_id'] = $user -> id;
     $response['response']['token'] = $user -> rollApiKey(); 
-    
+
     $response['success'] = true;
     $success['firstName'] =  $user->firstName;
     return response()->json($response, 202); 
@@ -178,30 +178,44 @@ public $successStatus = 200;
 
   public function get_user_with_face(Request $request){ 
     $input = $request->all();
-        $user = User::where('authToken', $input['authToken'])->first(); 
-        // $response['response']['token'] = $user -> rollApiKey(); 
-        if ($user) {
-          # code...
-          $ret_val = $user;
-        
-          $gradDate = Carbon::createFromFormat('Y-m-d', $ret_val['gradDate']);
-          $ret_val['gradDate'] = $gradDate -> format('Y/m');
-          $birthday = Carbon::createFromFormat('Y/m', $ret_val['gradDate']);
-          $ret_val['birthday'] = $birthday -> format('Y/m/d');
-          $prof = $user -> profile();
-          $ret_val['profileLink'] = $prof -> profileLink;
-          $ret_val['userId'] = $ret_val['id'];
-          $response['token'] = $user -> remember_token;
-          $response['response']['user_info'] = $ret_val;
+    $user = User::where('authToken', $input['authToken'])->first(); 
+    // $response['response']['token'] = $user -> rollApiKey(); 
+    if ($user) {
+      # code...
+      if ($user -> remember_token == '') {
+        # code...
+        $response['token'] = $user -> rollApiKey();
+      }
+      else {
+        $response['token'] = $user -> remember_token;
+      }
+      $ret_val = $user;
+      $response['gradDate'] = $ret_val['gradDate'];
+      if ($ret_val['gradDate']!='') {
+        # code...
+        $gradDate = Carbon::createFromFormat('Y-m-d', $ret_val['gradDate']);
+        $ret_val['gradDate'] = $gradDate -> format('Y/m');
+      }
+      
+      $birthday = Carbon::createFromFormat('Y-m-d', $ret_val['birthday']);
+      $ret_val['birthday'] = $birthday -> format('Y/m/d');
+      $prof = $user -> profile() -> first();
+      // $ret_val['profileLink'] = $prof -> profileLink;
+      $ret_val['userId'] = $ret_val['id'];
+      
+      
+      $response['response']['user_info'] = $ret_val;
+      $response['success']=true; 
 
-        }
-        else {
-          $response['token'] = null;
-          $response['response']['user_info'] = null;
-        }
-        
-        
-        $response['success']=true; 
-        return response()->json($response, $this-> successStatus); 
+    }
+    else {
+      $response['success'] = false;
+      $response['token'] = null;
+      $response['response']['user_info'] = null;
+    }
+    
+    
+    
+    return response()->json($response, $this-> successStatus); 
     } 
 }
