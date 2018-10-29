@@ -74,6 +74,9 @@ public $successStatus = 200;
             return $query -> where('a_id', $cur_user->id) -> where('b_id', $user -> id);
           }) -> latest() -> first();
 
+          $matches = new Match();
+          $match_count = $matches->match_counts($cur_user->id);
+          $user_info['consultCount'] = $match_count;
           if (!is_null($match)) {
             # code...
             $user_info['isConsult'] = $match -> status;
