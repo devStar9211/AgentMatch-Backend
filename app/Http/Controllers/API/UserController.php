@@ -103,7 +103,13 @@ public $successStatus = 200;
       $user -> authToken = $input['authToken'];
       $user -> update();
       $pro_data['user_id'] = $user -> id;
-      $pro_data['profileLink'] = $input['profileLink'];
+      if ($input['profileLink']) {
+        # code...
+        $pro_data['profileLink'] = $input['profileLink'];
+      } else {
+        $pro_data['profileLink'] = "";
+      }
+      
       $profile = profile::create($pro_data);
     } catch (Exception $exception) {
       return back()->withError($exception->getMessage())->withInput();
