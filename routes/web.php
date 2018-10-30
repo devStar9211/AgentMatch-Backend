@@ -11,9 +11,9 @@
 |
 */
 
-// Route::get('/', function () {
-//     return view('home');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 // Route::get('/verifyemail/{token}', 'Auth\RegisterController@verify');
 
 // Route::get('/guide',function() {
