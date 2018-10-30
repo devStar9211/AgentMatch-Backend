@@ -11,18 +11,18 @@
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-});
-Route::get('/verifyemail/{token}', 'Auth\RegisterController@verify');
+// Route::get('/', function () {
+//     return view('home');
+// });
+// Route::get('/verifyemail/{token}', 'Auth\RegisterController@verify');
 
-Route::get('/guide',function() {
-	return view('guide');
-});
-Route::get('/questions', function() {
-	return view('questions');
-});
+// Route::get('/guide',function() {
+// 	return view('guide');
+// });
+// Route::get('/questions', function() {
+// 	return view('questions');
+// });
 
-Auth::routes(['verify' => true]);
+// Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
