@@ -198,7 +198,6 @@ public $successStatus = 200;
         $response['token'] = $user -> remember_token;
       }
       $ret_val = $user;
-      $response['gradDate'] = $ret_val['gradDate'];
       if (!is_null($ret_val['gradDate'])) {
         # code...
         $gradDate = Carbon::createFromFormat('Y-m-d', $ret_val['gradDate']);
