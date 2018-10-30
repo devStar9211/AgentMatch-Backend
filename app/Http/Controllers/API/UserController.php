@@ -158,8 +158,10 @@ public $successStatus = 200;
       $user->update($input);
       $prof = $user -> profile();
       if ($prof) {
-        # code...
-        $prof -> profileLink = $input['profileLink'];
+        # code...\
+        if($input['profileLink'])
+          $prof -> profileLink = $input['profileLink'];
+        else $prof -> profileLink = "";
         $prof -> update();
       }
     } catch (Exception $exception){
