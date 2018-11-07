@@ -21,7 +21,7 @@ public $successStatus = 200;
      * 
      * @return \Illuminate\Http\Response 
      */ 
-  public function getList($token, Request $request){ 
+  public function getList(String $token, Request $request){ 
     $input = $request -> all();
     if (array_key_exists("page", $input)) {
       $page = $input['page'];
