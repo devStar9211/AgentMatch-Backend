@@ -23,16 +23,23 @@ public $successStatus = 200;
      */ 
   public function getList($token, Request $request){ 
     $input = $request -> all();
-    if (array_key_exists("page", $input)) $page = $input['page'];
-    else $page = 1;
+    if (array_key_exists("page", $input)) {
+      $page = $input['page'];
+    } else {
+      $page = 1;
+    }
     
     if (array_key_exists("keyword", $input) ) {
       $keyword = $input['keyword'];
+    } else {
+      $keyword = "";
     }
-    else $keyword = "";
 
-    if (array_key_exists("concern", $input)) $where = " AND prof_arr.target_id IS NOT NULL";
+    if (array_key_exists("concern", $input)) {
+      $where = " AND prof_arr.target_id IS NOT NULL";
+    }
     $user = User::where('remember_token', $token)->first();
+    
     if ($user == null) {
       # code...
       $response['message'] = "Unauthorized";

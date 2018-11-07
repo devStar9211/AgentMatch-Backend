@@ -159,9 +159,11 @@ public $successStatus = 200;
       $prof = $user -> profile();
       if ($prof) {
         # code...\
-        if($input['profileLink'])
+        if($input['profileLink']) {
           $prof -> profileLink = $input['profileLink'];
-        else $prof -> profileLink = "";
+        } else {
+          $prof -> profileLink = "";
+        }
         $prof -> update();
       }
     } catch (Exception $exception){
