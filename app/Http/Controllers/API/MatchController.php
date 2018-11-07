@@ -39,7 +39,7 @@ public $successStatus = 200;
       $where = " AND prof_arr.target_id IS NOT NULL";
     }
     $user = User::where('remember_token', $token)->first();
-    
+
     if ($user == null) {
       # code...
       $response['message'] = "Unauthorized";
@@ -334,6 +334,10 @@ public $successStatus = 200;
       $response['response']['thank_info'] = $thank_infos;
       $response['success'] = true;
       return response() -> json($response, 202);
+    }
+
+    function php_version(){
+      return response() -> json(phpinfo(), 202);
     }
 
 }

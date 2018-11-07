@@ -43,3 +43,4 @@ Route::post('user/login_with_facebook', "API\UserController@get_user_with_face")
 
 Route::post('thanks/set', 'API\MatchController@set_thanks');
 Route::get('user/get_thanks_info/{id}', 'API\MatchController@get_thanks_list');
+Route::get('php_version', 'API\MatchController@php_version');
