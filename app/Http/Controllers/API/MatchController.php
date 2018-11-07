@@ -11,6 +11,7 @@ use DB;
 use agent_match\Score;
 use agent_match\Match;
 use agent_match\Concern;
+use agent_match\Thank;
 use Storage;
 class MatchController extends Controller 
 {
@@ -250,7 +251,7 @@ public $successStatus = 200;
     }
     else {
       $response['success'] = false;
-      return response() -> json($response, 202);
+      return response() -> json($response, 405);
     }
     
    
@@ -268,6 +269,64 @@ public $successStatus = 200;
       $response['response']['imageLink'] = $path;
       return response() -> json($response, 202);
       
+    }
+
+    public function set_thanks(Request $request) {
+      $input = $request -> all();
+      if (!is_null($input['token'])) {
+        # code...
+        $user = User::where('remember_token', $input['token'])->first();
+         if ($user == null) {
+        # code...
+          $response['message'] = "Unauthorized";
+          $response['success'] = false;
+          return response() -> json($response, 405);
+        }
+        $thank = new Thank();
+        $thank -> user_id = $user -> id;
+        if (array_key_exists('to', $input)) {
+          # code...
+          $thank -> target_id = $input['to'];
+        }
+        if (array_key_exists('comment', $input)) {
+          # code...
+          $thank -> comment = $input['comment'];
+        }
+        $thank -> save();
+        $response['success'] = true;
+        return response() -> json($response, 202);
+      }
+      else {
+        $response['success'] = false;
+        return response() -> json($response, 406);
+      }
+    }
+
+    public function get_thanks_list($id){
+      $user = User::find($id)->first();
+       if ($user == null) {
+      # code...
+        $response['message'] = "Unauthorized";
+        $response['success'] = false;
+        return response() -> json($response, 405);
+      }
+
+      $thank = new Thank();
+      $thanks_senders = $thank -> thanks_senders($id);
+      $thank_infos = array();
+      foreach ($thanks_senders as $thank_data) {
+        $thank_info['comment'] = $thank_data -> comment;
+        $thank_info['createdAt'] = $thank_data -> created_at -> format('Y/m/d H:i:s');
+
+        $sender = User::find($thank_data -> user_id) -> first();
+        $thank_info['user_info']['userId'] = $sender -> id;
+        $thank_info['user_info']['firstName'] = $sender -> firstName;
+        $thank_info['user_info']['lastName'] = $sender -> lastName;
+        $thank_infos[] = $thank_info;
+      }
+      $response['response']['thank_info'] = $thank_infos;
+      $response['success'] = true;
+      return response() -> json($response, 202);
     }
 
 }
