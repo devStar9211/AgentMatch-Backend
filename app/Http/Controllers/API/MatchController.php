@@ -79,7 +79,18 @@ public $successStatus = 200;
           $user_info['lastName'] = $cur_user -> lastName;
           $user_info['userType'] = $cur_user -> userType;
           $birthday = Carbon::createFromFormat('Y-m-d', $cur_user -> birthday);
+
           $user_info['birthday'] = $birthday -> format('Y/m/d');
+          $thanks = new Thank();
+          $user_info['thanksCount'] = $thanks -> thanks_count($cur_user -> id);
+          if (!is_null($cur_user -> gradDate)) {
+            # code...
+            $gradDate = Carbon::createFromFormat('Y-m-d', $cur_user -> gradDate);
+            $user_info['gradDate'] = $gradDate -> format('Y/m');
+          } else {
+            $user_info['gradDate'] = "";
+          }
+          
           $user_info['portfollio'] = $profile -> portfollio;
           $concern = Concern::where('user_id', $user -> id) -> where('target_id', $cur_user -> id) -> get();
           if (sizeof($concern) != 0) {
