@@ -28,26 +28,29 @@ class MessageController extends Controller
   public function index(Request $request){
     $input = $request -> all();
     $user = User::where('remember_token', $input['token'])->first();
-    $type = $input['type'];
+    $status = $input['status'];
     if ($user == null) {
       # code...
       $response['message'] = "Unauthorized";
       $response['success'] = false;
       return response() -> json($response, 405);
     }
-    if ($type == 'true') {
+    if ($user -> userType == 1) {
+      $query = Match::where('a_id', $user -> id); 
+    } else {
+      $query = Match::where('b_id', $user -> id);
+    }
+    if ($status == "true") {
       # code...
-      $matches = Match::where('a_id', $user -> id)->get();
+      $query = $query -> where('status', 2);
     }
-    else {
-      $matches = Match::where('b_id', $user -> id)->get(); 
-    }
+    $matches = $query -> get();
     if (sizeof($matches) != 0) {
       # code...
     
       foreach ($matches as $index => $match) {
         # code...
-        if ($type == 'true') {
+        if ($user -> userType == 1) {
           $target = User::find($match->b_id);
         }
         else {
