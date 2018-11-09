@@ -47,9 +47,14 @@ public $successStatus = 200;
       $response['success'] = false;
       return response() -> json($response, 405);
     }
-    
+    $query = User::where('id', '<>', $user->id);
     $num_per_page = 10;
-    $users = User::where('id', '<>', $user->id)->where('firstName', "LIKE", "%".$keyword."%")->orWhere('lastName', "LIKE", "%".$keyword."%")->skip(($page-1)*$num_per_page) -> take($num_per_page) -> get();
+    if ($user -> userType == 1) {
+      $query = $query -> where('userType',0);
+    } elseif ($user -> userType ==0) {
+      $query = $query -> where('userType',1);
+    }
+    $users = $query->where(DB::raw("CONCAT(firstName,lastName)"), "LIKE", "%".$keyword."%")->skip(($page-1)*$num_per_page) -> take($num_per_page) -> get();
    
     $user_list = array();
     if (sizeof($users) != 0) {
@@ -72,6 +77,7 @@ public $successStatus = 200;
           $user_info['location'] = $profile -> location;
           $user_info['firstName'] = $cur_user -> firstName;
           $user_info['lastName'] = $cur_user -> lastName;
+          $user_info['userType'] = $cur_user -> userType;
           $birthday = Carbon::createFromFormat('Y-m-d', $cur_user -> birthday);
           $user_info['birthday'] = $birthday -> format('Y/m/d');
           $user_info['portfollio'] = $profile -> portfollio;

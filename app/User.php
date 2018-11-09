@@ -13,7 +13,7 @@ class User extends Authenticatable implements MustVerifyEmail
     //
   use HasApiTokens, Notifiable;
   protected $fillable = [
-    'firstName', 'firstNameFuri', 'lastName', 'lastNameFuri','birthday',  'gender', 'schoolType', 'schoolName', 'literaryType', 'faculty', 'subject', 'gradDate', 'email','password'
+    'firstName', 'firstNameFuri', 'lastName', 'lastNameFuri','birthday',  'gender', 'schoolType', 'schoolName', 'literaryType', 'faculty', 'subject', 'gradDate', 'email','password','userType'
   ];
 
   public function user_with_token($token) {
