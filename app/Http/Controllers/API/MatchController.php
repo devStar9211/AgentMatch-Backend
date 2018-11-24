@@ -12,6 +12,8 @@ use agent_match\Score;
 use agent_match\Match;
 use agent_match\Concern;
 use agent_match\Thank;
+use agent_match\Event;
+use agent_match\EventJoinList;
 use Storage;
 class MatchController extends Controller 
 {
@@ -356,6 +358,44 @@ public $successStatus = 200;
 
     function php_version(){
       return response() -> json(phpinfo(), 202);
+    }
+
+    function get_event_list($token){
+      if (!is_null($token)) {
+        # code...
+        $user = User::where('remember_token', $token)->first();
+         if ($user == null) {
+        # code...
+          $response['message'] = "Unauthorized";
+          $response['success'] = false;
+          return response() -> json($response, 405);
+        }
+        $events = Event::all();
+        foreach ($events as $event) {
+          $event_item['eventId'] = $event -> id;
+          $event_item['title'] = $event -> title;
+          $event_item['date'] = $event -> date;
+          $event_times = $event -> event_times() ->get();
+          $joined = false;
+          $event_item['timeId'] = null;
+          $times = [];
+          foreach ($event_times as $event_time) {
+            $time = Carbon::createFromFormat('Y-m-d H:i:s', $event_time -> time);
+            $times[] = $time -> format('H:i:s');
+            $joined_find = $event_time -> event_join_users() -> where('user_id', $user -> id) -> first();
+            if (!is_null($joined_find)) {
+               $joined = true;
+               $event_item['timeId'] = $event_time -> id;
+             } 
+          }
+          $event_item['isJoined'] = $joined;
+          $event_item['startTime'] = $times;
+          $event_list[] = $event_item;
+        }
+        $response['response']['eventList'] = $event_list;
+        $response['success'] = true;
+      }
+      return response() -> json($response, 201);
     }
 
 }
