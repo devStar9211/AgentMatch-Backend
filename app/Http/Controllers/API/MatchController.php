@@ -360,6 +360,9 @@ public $successStatus = 200;
       return response() -> json(phpinfo(), 202);
     }
 
+
+    // event
+
     function get_event_list($token){
       if (!is_null($token)) {
         # code...
@@ -382,12 +385,13 @@ public $successStatus = 200;
           foreach ($event_times as $event_time) {
             $time = Carbon::createFromFormat('Y-m-d H:i:s', $event_time -> time);
             $times[] = $time -> format('H:i:s');
-            $joined_find = $event_time -> event_join_users() -> where('user_id', $user -> id) -> first();
-            if (!is_null($joined_find)) {
-               $joined = true;
-               $event_item['timeId'] = $event_time -> id;
-             } 
+            
           }
+          $joined_user = $event -> event_join_users() -> where('user_id', $user -> id) -> first();
+          if (!is_null($joined_user)) {
+             $joined = true;
+             $event_item['timeId'] = $joined_user -> event_time_id;
+           } 
           $event_item['isJoined'] = $joined;
           $event_item['startTime'] = $times;
           $event_list[] = $event_item;
@@ -397,5 +401,57 @@ public $successStatus = 200;
       }
       return response() -> json($response, 201);
     }
+
+
+    function join_event(Request $request) {
+      $input = $request -> all();
+      if (!is_null($input['token'])) {
+        # code...
+        $user = User::where('remember_token', $input['token'])->first();
+         if ($user == null) {
+        # code...
+          $response['message'] = "Unauthorized";
+          $response['success'] = false;
+          return response() -> json($response, 405);
+        }
+
+      }
+
+      $event_id = $request['eventId'];
+      $join_user = new EventJoinList();
+      $join_user -> user_id = $user -> id;
+      $join_user -> event_id = $event_id;
+      $join_user -> save();
+      $response['success'] = true;
+      $response['response']=[];
+      return response() -> json($response, 201);
+    }
+
+    function start_time_event(Request $request) {
+      $input = $request -> all();
+      if (!is_null($input['token'])) {
+        # code...
+        $user = User::where('remember_token', $input['token'])->first();
+         if ($user == null) {
+        # code...
+          $response['message'] = "Unauthorized";
+          $response['success'] = false;
+          return response() -> json($response, 405);
+        }
+      }
+
+      $event_id = $request['eventId'];
+      $time_id = $request['timeId'];
+      $join_user = EventJoinList::find($event_id);
+      $join_user -> user_id = $user -> id;
+      $join_user -> event_time_id = $time_id;
+      $join_user -> save();
+      $response['success'] = true;
+      $response['response']=[];
+      return response() -> json($response, 201);
+    }
+
+
+
 
 }

@@ -44,3 +44,5 @@ Route::post('user/login_with_facebook', "API\UserController@get_user_with_face")
 Route::post('thanks/set', 'API\MatchController@set_thanks');
 Route::get('user/get_thanks_info/{id}', 'API\MatchController@get_thanks_list');
 Route::get('event/get_list/{token}', 'API\MatchController@get_event_list');
+Route::post('event/join', 'API\MatchController@join_event');
+Route::post('event/set_start_time', 'API\MatchController@start_time_event');

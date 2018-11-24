@@ -11,4 +11,8 @@ class Event extends Model
     return $this->hasMany('agent_match\EventTime');
   }
 
+  public function event_join_users() {
+    return $this -> hasMany('agent_match\EventJoinList');
+  }
+
 }

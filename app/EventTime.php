@@ -11,7 +11,5 @@ class EventTime extends Model
     return $this->belongsTo('agent_match\Event');
   }
 
-  public function event_join_users() {
-    return $this -> hasMany('agent_match\EventJoinList');
-  }
+  
 }
